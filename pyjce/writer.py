@@ -83,7 +83,7 @@ class JceWriter:
                 self.write_filed(*d[i])
 
     def _write_list(self, length: int, data: list):  # [(tag,type,value),...]
-        # self._buffer.write_bytes(bytes([length]))
+        self._buffer.write_bytes(bytes([length]))
         for i in data:
             self.write_filed(*i)
 
