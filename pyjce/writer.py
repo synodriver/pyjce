@@ -77,7 +77,7 @@ class JceWriter:
         pass
 
     def _write_map(self, length: int, data: list):  # [((tag,type,data),(tag,type,data)),...]
-        self.write_filed(0, 2, length*2)
+        self.write_filed(0, 2, length)
         for d in data:
             self.write_filed(*d[0])
             self.write_filed(*d[1])
