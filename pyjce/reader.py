@@ -19,7 +19,7 @@ def read_head(byte_buffer: ByteBuffer) -> Tuple[HeadData, int]:
     if head_data.tag != 15:  # 如果tag为15 则下一个字段为tag
         return head_data, 1
     else:
-        head_data.tag = byte_buffer.read()  # & 0xFF
+        head_data.tag = byte_buffer.read() & 0xFF
         return head_data, 2
 
 

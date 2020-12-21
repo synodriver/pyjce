@@ -77,13 +77,13 @@ class JceWriter:
         pass
 
     def _write_map(self, length: int, data: list):  # [((tag,type,data),(tag,type,data)),...]
-        self._buffer.write_bytes(bytes([length]))
-        for i in range(2):
-            for d in data:
-                self.write_filed(*d[i])
+        self.write_filed(0, 2, length*2)
+        for d in data:
+            self.write_filed(*d[0])
+            self.write_filed(*d[1])
 
     def _write_list(self, length: int, data: list):  # [(tag,type,value),...]
-        self._buffer.write_bytes(bytes([length]))
+        self.write_filed(0, 2, length)
         for i in data:
             self.write_filed(*i)
 

@@ -17,13 +17,14 @@ class TestReader(unittest.TestCase):
         writer.write_filed(0, 2, 3)  # 4byte int 3
         writer.write_filed(1, 5, 3.8)  # 8byte double 3.8
         writer.write_filed(2, 6, "哈哈哈")  # string1
-        writer.write_filed(3, 9, [(0, 2, 3), (1, 5, 3.8), (2, 6, "哈哈哈")], 27)
+        writer.write_filed(3, 9, [(0, 2, 3), (0, 5, 3.8), (0, 6, "哈哈哈")], 3)
+        # writer.write_filed(4, 8, [((0, 6, "哈哈哈"), (1, 6, "哈哈哈")), ((0, 2, 3), (1, 6, "哈哈哈"))], 2)
 
         def decode(data: bytes) -> dict:
             reader = JceReader(data)
             s = JceStruct()
             s.read_from(reader)
-            return s.as_dict
+            return s.as_dict()
 
         print(decode(writer.bytes))
 

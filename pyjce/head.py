@@ -9,7 +9,10 @@ class HeadData(object):
     """
 
     def __init__(self, tag: Optional[int] = 0, type_: Optional[int] = 0):
-        self.tag = tag
+        if tag < 256:
+            self.tag = tag
+        else:
+            raise ValueError("tag can't greater than 255")
         self.type = type_
 
     def __str__(self):
