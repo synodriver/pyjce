@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import struct
-from typing import Optional
+from copy import deepcopy
+from typing import Optional, Union
 
 
 class ByteBuffer:
@@ -10,19 +12,22 @@ class ByteBuffer:
     # _bytes = None
     # _position = 0
 
-    def __init__(self, bs: Optional[bytes] = None):
+    def __init__(self, bs: Optional[Union[bytes, bytearray]] = None):
         if bs is None:
-            self._bytes = b""
-        elif isinstance(bs, bytes):
-            self._bytes = bs
+            self._bytes = bytearray()
         elif isinstance(bs, bytearray):
-            self._bytes = bytes(bs)
+            self._bytes = bs
+        elif isinstance(bs, bytes):
+            self._bytes = bytearray(bs)
         else:
             raise TypeError("'buffer' argument must be bytes or bytesarray")
         self._position = 0
 
+    def __len__(self):
+        return len(self._bytes)
+
     @property
-    def bytes(self) -> bytes:
+    def bytes(self) -> bytearray:
         """
         返回自己的全部数据
         :return:
@@ -40,7 +45,7 @@ class ByteBuffer:
     @position.setter
     def position(self, value):
         """
-        设置卫生纸指针
+        设置读取指针
         :param value:
         :return:
         """
@@ -64,7 +69,7 @@ class ByteBuffer:
         self._position += 1
         return b
 
-    def read_bytes(self, size: int) -> bytes:
+    def read_bytes(self, size: int) -> bytearray:
         """
         读取接下来的size个字节 指针向后面移动size
         :param size:
@@ -120,13 +125,13 @@ class ByteBuffer:
         b = self.read_bytes(8)
         return struct.unpack('>d', b)[0]
 
-    def write_bytes(self, data: bytes) -> None:
+    def write_bytes(self, data: Union["bytes", bytearray]) -> None:
         """
         写入一个字节流
         :param data:
         :return:
         """
-        self._bytes += data
+        self._bytes.extend(data)
         self._position += len(data)
 
     def write_hex(self, hexstr: str) -> None:
@@ -134,15 +139,15 @@ class ByteBuffer:
         pkt = bytes.fromhex(str_bytes)
         self.write_bytes(pkt)
 
-    def write_int2(self, num):
+    def write_int2(self, num) -> None:
         pkt = struct.pack(">h", num)
         self.write_bytes(pkt)
 
-    def write_int4(self, num):
+    def write_int4(self, num) -> None:
         pkt = struct.pack(">i", num)
         self.write_bytes(pkt)
 
-    def write_int8(self, num):
+    def write_int8(self, num) -> None:
         pkt = struct.pack(">q", num)
         self.write_bytes(pkt)
 
@@ -150,18 +155,16 @@ class ByteBuffer:
         pkt = struct.pack(">f", num)
         self.write_bytes(pkt)
 
-    def write_double(self, num):
+    def write_double(self, num) -> None:
         pkt = struct.pack(">d", num)
         self.write_bytes(pkt)
 
-    def copy(self):
+    def copy(self) -> "ByteBuffer":
         """
         返回自己的一份深拷贝
         :return:
         """
-        bb = ByteBuffer(self._bytes)
-        bb.position = self.position
-        return bb
+        return deepcopy(self)
 
     def seek(self, position: int) -> None:
         """

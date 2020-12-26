@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+jce field 的头部 tag type
+"""
 from typing import Optional
 
 
