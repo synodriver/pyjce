@@ -103,7 +103,7 @@ class JceReader:
         b = self.buffer.read_bytes(size)
         return b
 
-    def _read_byte(self) -> bytes:
+    def _read_byte(self) -> bytearray:
         """
         一个字节
         :return:
