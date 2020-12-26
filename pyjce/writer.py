@@ -137,7 +137,7 @@ class JceWriter:
             return
         self.write_int32(len(data), 0)
         for i in data:
-            self.write_object(i, 0)  # todo 没完成
+            self.write_object(i, 0)
 
     def write_jce_struct_list(self, data: List[IJceStruct], tag: int):
         self.write_head(9, tag)
@@ -179,12 +179,14 @@ class JceWriter:
             self.write_float64(data, tag)
         elif isinstance(data, str):
             self.write_string(data, tag)
-        elif isinstance(data, IJceStruct):  # todo 还有个basemodel
+        elif isinstance(data, IJceStruct):
             self.write_jce_struct(data, tag)
 
     def write_jce_struct_raw(self, data: IJceStruct):
         """
+        只写内容不写头部
         todo 用pydantic给前面的都写加上jceid元数据 不然没法玩
+
         :param data:
         :return:
         """

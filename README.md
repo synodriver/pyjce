@@ -1,6 +1,6 @@
 # pyjce2
 
-[![pypi](https://img.shields.io/pypi/v/pyjce2.svg)](https://pypi.org/project/pyjce/) 
+[![pypi](https://img.shields.io/pypi/v/pyjce2.svg)](https://pypi.org/project/pyjce2/) 
 ![python](https://img.shields.io/pypi/pyversions/pyjce2)
 ![implementation](https://img.shields.io/pypi/implementation/pyjce2)
 ![wheel](https://img.shields.io/pypi/wheel/pyjce2)
