@@ -5,4 +5,4 @@ from .struct import IJceStruct
 
 __all__ = ["ByteBuffer", "IJceStruct", "JceReader", "JceWriter"]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

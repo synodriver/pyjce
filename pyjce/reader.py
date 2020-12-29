@@ -138,14 +138,14 @@ class JceReader:
             self.skip(len_)
             self._skip_field(head.type)
 
-    def skip_to_struct_end(self):
+    def skip_to_struct_end(self) -> None:
         while True:
             head, _ = self.read_head()
             self._skip_field(head.type)
             if head.type == 11:
                 return
 
-    def read_byte(self, tag: int) -> bytes:
+    def read_byte(self, tag: int) -> Union[bytes, bytearray]:
         if not self.skip_to_tag(tag):
             return bytes([0])
         head, _ = self.read_head()
@@ -282,7 +282,7 @@ class JceReader:
             while True:
                 head, _ = self.peak_head()
                 if head.type == 11 and head.tag == 0:
-                    self.read_head()
+                    self.read_head()  # 去掉结束标志
                     break
                 sl.append(self.read_any(head.tag))
             return sl
