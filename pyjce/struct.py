@@ -13,7 +13,7 @@ class IJceStruct(BaseModel, abc.ABC):
     """
 
     @abc.abstractmethod
-    def read_from(self, reader: JceReader):
+    def read_from(self, reader: JceReader) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
