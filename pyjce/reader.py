@@ -35,7 +35,7 @@ class JceReader:
         head_data.tag = (b & 0xF0) >> 4  # 高4位为tag,
         if head_data.tag == 15:  # 如果tag为15 则下一个字段为tag
             b: int = self.buffer.read()
-            head_data.tag = b & 0xFF  # TODO 这个似乎可以去掉 不过昵昵不改我也不改
+            head_data.tag = b & 0xFF  # TODO 这个似乎可以去掉 不过昵昵不改我也不改 防止溢出的
             return head_data, 2
         else:
             return head_data, 1
@@ -285,6 +285,67 @@ class JceReader:
                     self.read_head()  # 去掉结束标志
                     break
                 sl.append(self.read_any(head.tag))
+            return sl
+
+        elif type_ == 11:
+            return None
+
+        elif type_ == 12:
+            return 0
+        elif type_ == 13:  # simple list   head len data
+            self.read_head()
+            return self.read_bytes(self.read_int32(0))
+        else:
+            return
+
+    def read_any_with_tag(self, tag: int) -> Any:
+        """
+        同上,但是会是Dict[tag,value]的递归的组合
+        e.g. 上一个函数返回[1,2,3] ,这个返回{1:1,2:2,3:3},就是带上了tag
+        :param tag:
+        :return:
+        """
+        if not self.skip_to_tag(tag):
+            return
+        head, _ = self.read_head()
+        if (type_ := head.type) == 0:
+            return self._read_byte()[0]
+        elif type_ == 1:
+            return self.read_uint16()
+        elif type_ == 2:
+            return self._read_int32()
+        elif type_ == 3:
+            return self._read_int64()
+        elif type_ == 4:
+            return self._read_float32()
+        elif type_ == 5:
+            return self._read_float64()
+        elif type_ == 6:
+            return self.read_bytes(self._read_byte()[0]).decode(DEFAULT_ENCODING)
+        elif type_ == 7:
+            return self.read_bytes(self._read_int32()).decode(DEFAULT_ENCODING)
+        elif type_ == 8:  # map csdn的文档大有问题
+            size: int = self.read_int32(0)  # 跳到字典
+            m = {}
+            for i in range(size):
+                k = self.read_any_with_tag(0)  # 不这么写会出问题
+                v = self.read_any_with_tag(1)
+                m[k] = v
+            return m
+        elif type_ == 9:  # list
+            sl = []
+            size = self.read_int32(0)
+            for i in range(size):
+                sl.append(self.read_any_with_tag(0))
+            return sl
+        elif type_ == 10:  # obj
+            sl = {}
+            while True:
+                head, _ = self.peak_head()
+                if head.type == 11 and head.tag == 0:
+                    self.read_head()  # 去掉结束标志
+                    break
+                sl[head.tag] = self.read_any_with_tag(head.tag)
             return sl
 
         elif type_ == 11:
