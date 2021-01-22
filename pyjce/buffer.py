@@ -93,6 +93,14 @@ class ByteBuffer:
         b = self.read_bytes(2)
         return struct.unpack('>h', b)[0]  # 解包出来是个元组 得像这样加料
 
+    def read_uint2(self) -> int:
+        """
+        读取一个jce中的uint2类型
+        :return:
+        """
+        b = self.read_bytes(2)
+        return struct.unpack('>H', b)[0]  # 解包出来是个元组 得像这样加料
+
     def read_int4(self) -> int:
         """
         读取一个jce中的int4类型
@@ -101,6 +109,14 @@ class ByteBuffer:
         b = self.read_bytes(4)
         return struct.unpack('>i', b)[0]
 
+    def read_uint4(self) -> int:
+        """
+        读取一个jce中的uint4类型
+        :return:
+        """
+        b = self.read_bytes(4)
+        return struct.unpack('>I', b)[0]
+
     def read_int8(self) -> int:
         """
         读取一个jce中的int8类型
@@ -108,6 +124,14 @@ class ByteBuffer:
         """
         b = self.read_bytes(8)
         return struct.unpack('>q', b)[0]
+
+    def read_uint8(self) -> int:
+        """
+        读取一个jce中的int8类型
+        :return:
+        """
+        b = self.read_bytes(8)
+        return struct.unpack('>Q', b)[0]
 
     def read_float(self) -> float:
         """
