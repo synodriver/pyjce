@@ -37,7 +37,7 @@ class JceWriter:
             self.buffer.write_bytes(data)
             self.buffer.write_bytes(bytes([tag]))
 
-    def write_byte(self, b: bytes, tag: int) -> None:
+    def write_byte(self, b: bytes, tag: int) -> "JceWriter":
         """
         写入一个字节
         :param b:
@@ -51,6 +51,7 @@ class JceWriter:
         else:
             self.write_head(0, tag)
             self.buffer.write_bytes(b)
+        return self
 
     def write_bool(self, b: bool, tag: int) -> None:
         if b:
@@ -149,11 +150,11 @@ class JceWriter:
             self.write_jce_struct(i, 0)
 
     def write_map(self, m: dict, tag: int):
-        if not m:
+        if m is None:
             self.write_head(8, tag)
             self.write_int32(0, 0)
             return
-        if not isinstance(map, MutableMapping):
+        if not isinstance(m, MutableMapping):
             return
         self.write_head(8, tag)
         self.write_int32(len(m), 0)
@@ -169,7 +170,10 @@ class JceWriter:
             self.write_list(data, tag)
             return
         if isinstance(data, (bytes, bytearray)):
-            self.write_bytes(data, tag)
+            if len(data) == 1:
+                self.write_byte(data, tag)
+            else:
+                self.write_bytes(data, tag)
             return
         if isinstance(data, bool):
             self.write_bool(data, tag)
@@ -190,9 +194,10 @@ class JceWriter:
         :param data:
         :return:
         """
-        for field_name, val in data.schema()["properties"].items():
-            jce_id: int = val["jce_id"]
-            self.write_object(getattr(data, field_name), jce_id)
+        for field_name, val in data.__fields__.items():
+            jce_id: int = val.field_info.extra["jce_id"]
+            field_val = getattr(data, field_name)
+            self.write_object(field_val, jce_id)
 
     def write_jce_struct(self, data: IJceStruct, tag: int):
         self.write_head(10, tag)

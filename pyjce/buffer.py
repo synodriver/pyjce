@@ -167,12 +167,24 @@ class ByteBuffer:
         pkt = struct.pack(">h", num)
         self.write_bytes(pkt)
 
+    def write_uint2(self, num) -> None:
+        pkt = struct.pack(">H", num)
+        self.write_bytes(pkt)
+
     def write_int4(self, num) -> None:
         pkt = struct.pack(">i", num)
         self.write_bytes(pkt)
 
+    def write_uint4(self, num) -> None:
+        pkt = struct.pack(">I", num)
+        self.write_bytes(pkt)
+
     def write_int8(self, num) -> None:
         pkt = struct.pack(">q", num)
+        self.write_bytes(pkt)
+
+    def write_uint8(self, num) -> None:
+        pkt = struct.pack(">Q", num)
         self.write_bytes(pkt)
 
     def write_float(self, num):
