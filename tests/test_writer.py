@@ -22,7 +22,6 @@ class TestWriter(unittest.TestCase):
         self.assertEqual(sso.server, "rcnb")
         self.assertEqual(sso.port, 8000)
         self.assertEqual(sso.location, "rcnb")
-        pass
 
 
 if __name__ == "__main__":

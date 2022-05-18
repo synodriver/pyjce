@@ -66,9 +66,9 @@ class JceReader:
             self.skip(1)
         elif type_ == 1:
             self.skip(2)
-        elif type_ in (2, 4):
+        elif type_ in {2, 4}:
             self.skip(4)
-        elif type_ in (3, 5):
+        elif type_ in {3, 5}:
             self.skip(8)
         elif type_ == 6:
             len_ = self.buffer.read()
@@ -78,11 +78,11 @@ class JceReader:
             self.skip(len_)
         elif type_ == 8:  # map
             size: int = self.read_int32(0)
-            for i in range(2 * size):
+            for _ in range(2 * size):
                 self.skip_next_field()
         elif type_ == 9:  # list
             size: int = self.read_int32(0)
-            for i in range(size):
+            for _ in range(size):
                 self.skip_next_field()
         elif type_ == 10:
             self.skip_to_struct_end()
@@ -96,12 +96,11 @@ class JceReader:
         self._skip_field(head.type)
 
     def skip_field(self, count: int):
-        for i in range(count):
+        for _ in range(count):
             self.skip_next_field()
 
     def read_bytes(self, size: int) -> bytearray:
-        b = self.buffer.read_bytes(size)
-        return b
+        return self.buffer.read_bytes(size)
 
     def _read_byte(self) -> bytearray:
         """
@@ -155,8 +154,6 @@ class JceReader:
             return self._read_byte()
         else:
             return bytes([0])
-
-        pass
 
     def read_bool(self, tag: int) -> bool:
         return self.read_bytes(tag) != 0
@@ -229,7 +226,6 @@ class JceReader:
             return self._read_float64()
         else:
             return 0.0
-        pass
 
     def read_string(self, tag: int):
         if not self.skip_to_tag(tag):
@@ -266,16 +262,14 @@ class JceReader:
         elif type_ == 8:  # map csdn的文档大有问题
             size: int = self.read_int32(0)  # 跳到字典
             m = {}
-            for i in range(size):
+            for _ in range(size):
                 k = self.read_any(0)  # 不这么写会出问题
                 v = self.read_any(1)
                 m[k] = v
             return m
         elif type_ == 9:  # list
-            sl = []
             size = self.read_int32(0)
-            for i in range(size):
-                sl.append(self.read_any(0))
+            sl = [self.read_any(0) for _ in range(size)]
             return sl
         elif type_ == 10:  # obj
             sl = []
@@ -327,16 +321,14 @@ class JceReader:
         elif type_ == 8:  # map csdn的文档大有问题
             size: int = self.read_int32(0)  # 跳到字典
             m = {}
-            for i in range(size):
+            for _ in range(size):
                 k = self.read_any_with_tag(0)  # 不这么写会出问题
                 v = self.read_any_with_tag(1)
                 m[k] = v
             return m
         elif type_ == 9:  # list
-            sl = []
             size = self.read_int32(0)
-            for i in range(size):
-                sl.append(self.read_any_with_tag(0))
+            sl = [self.read_any_with_tag(0) for _ in range(size)]
             return sl
         elif type_ == 10:  # obj
             sl = {}
@@ -364,7 +356,7 @@ class JceReader:
             return
         self.read_head()  # 去头就可以吃了
         size = self.read_int32(0)
-        for i in range(size):
+        for _ in range(size):
             k = self.read_any(0)
             v = self.read_any(1)
             if k is not None:
@@ -383,7 +375,7 @@ class JceReader:
         head, _ = self.read_head()
         if head.type == 9:
             size = self.read_int32(0)
-            for i in range(size):
+            for _ in range(size):
                 data = self.read_object(type_)
                 sl.append(data)
             return sl

@@ -54,10 +54,7 @@ class JceWriter:
         return self
 
     def write_bool(self, b: bool, tag: int) -> None:
-        if b:
-            data: bytes = bytes([1])
-        else:
-            data: bytes = bytes([0])
+        data: bytes = bytes([1]) if b else bytes([0])
         self.write_byte(data, tag)
 
     def write_int16(self, n: int, tag: int) -> None:
@@ -122,7 +119,7 @@ class JceWriter:
         :return:
         """
         self.write_head(9, tag)
-        if len(data) == 0:
+        if not data:
             self.write_int32(0, 0)
             return
         self.write_int32(len(data), 0)
@@ -133,7 +130,7 @@ class JceWriter:
         if not isinstance(data, list):
             return
         self.write_head(9, tag)
-        if len(data) == 0:
+        if not data:
             self.write_int32(0, 0)
             return
         self.write_int32(len(data), 0)
@@ -142,7 +139,7 @@ class JceWriter:
 
     def write_jce_struct_list(self, data: List[IJceStruct], tag: int):
         self.write_head(9, tag)
-        if len(data) == 0:
+        if not data:
             self.write_int32(0, 0)
             return
         self.write_int32(len(data), 0)
